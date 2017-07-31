@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class LocationListFragment extends Fragment {
 							 Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_location_list, container, false);
 
-		mLocationRecyclerView = (RecyclerView) view
+		mLocationRecyclerView = view
 				.findViewById(R.id.location_recycler_view);
 		mLocationRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -46,8 +47,32 @@ public class LocationListFragment extends Fragment {
 	}
 
 	private class LocationHolder extends RecyclerView.ViewHolder {
+
+		private LocationItem mLocationItem;
+
+		private TextView mLocationNameTextView;
+		private TextView mLocationAddressTextView;
+		private TextView mLocationFacilitiesTextView;
+		private TextView mLocationDistanceTextView;
+		private TextView mLocationRatingTextView;
+
 		public LocationHolder(LayoutInflater inflater, ViewGroup parent) {
 			super(inflater.inflate(R.layout.list_item_location, parent, false));
+
+			mLocationNameTextView = itemView.findViewById(R.id.location_name);
+			mLocationAddressTextView = itemView.findViewById(R.id.location_address);
+			mLocationFacilitiesTextView = itemView.findViewById(R.id.location_facilities);
+			mLocationDistanceTextView = itemView.findViewById(R.id.location_distance);
+			mLocationRatingTextView = itemView.findViewById(R.id.location_rating);
+		}
+
+		public void bind(LocationItem locationItem) {
+			mLocationItem = locationItem;
+			mLocationNameTextView.setText(locationItem.getName());
+			mLocationAddressTextView.setText(locationItem.getAddress());
+			mLocationFacilitiesTextView.setText(locationItem.getFacilities());
+			mLocationDistanceTextView.setText(locationItem.getDistance());
+			mLocationRatingTextView.setText(locationItem.getRating());
 		}
 	}
 
@@ -68,12 +93,17 @@ public class LocationListFragment extends Fragment {
 
 		@Override
 		public void onBindViewHolder(LocationHolder holder, int position) {
-
+			LocationItem locationItem = mLocationItems.get(position);
+			holder.bind(locationItem);
 		}
 
 		@Override
 		public int getItemCount() {
 			return mLocationItems.size();
+		}
+
+		public void setCrimes(List<LocationItem> locationItems) {
+			mLocationItems = locationItems;
 		}
 	}
 
@@ -83,11 +113,16 @@ public class LocationListFragment extends Fragment {
 		}
 	}
 
-	private class FetchItemsTask extends AsyncTask<Void,Void,Void> {
+	private class FetchItemsTask extends AsyncTask<Void,Void,List<LocationItem>> {
 		@Override
-		protected Void doInBackground(Void... params) {
-			new LocationFetchr().fetchItems();
-			return null;
+		protected List<LocationItem> doInBackground(Void... params) {
+			return new LocationFetchr().fetchItems();
+		}
+
+		@Override
+		protected void onPostExecute(List<LocationItem> items) {
+			mItems = items;
+			setupAdapter();
 		}
 	}
 }
