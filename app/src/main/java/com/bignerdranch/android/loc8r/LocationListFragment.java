@@ -1,21 +1,18 @@
 package com.bignerdranch.android.loc8r;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.content.ContentValues.TAG;
 
 public class LocationListFragment extends Fragment {
 
@@ -46,7 +43,8 @@ public class LocationListFragment extends Fragment {
 		return view;
 	}
 
-	private class LocationHolder extends RecyclerView.ViewHolder {
+	private class LocationHolder extends RecyclerView.ViewHolder
+		implements View.OnClickListener {
 
 		private LocationItem mLocationItem;
 
@@ -73,6 +71,12 @@ public class LocationListFragment extends Fragment {
 			mLocationFacilitiesTextView.setText(locationItem.getFacilities());
 			mLocationDistanceTextView.setText(locationItem.getDistance());
 			mLocationRatingTextView.setText(locationItem.getRating());
+		}
+
+		@Override
+		public void onClick(View view) {
+			Intent intent = new Intent(getActivity(), LocationActivity.class);
+			startActivity(intent);
 		}
 	}
 
