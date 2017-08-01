@@ -6,6 +6,9 @@ public class LocationActivity extends SingleFragmentActivity {
 
 	@Override
 	protected Fragment createFragment() {
-		return new LocationFragment();
+
+		//AFP: id choto. Conectar el bueno
+		long id = 1;
+		return LocationFragment.newInstance(id);
 	}
 }

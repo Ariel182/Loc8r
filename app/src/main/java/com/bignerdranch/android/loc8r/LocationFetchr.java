@@ -54,6 +54,7 @@ public class LocationFetchr {
 	}
 
 	public List<LocationItem> fetchItems() {
+
 		List<LocationItem> items = new ArrayList<>();
 
 		try {
@@ -80,6 +81,36 @@ public class LocationFetchr {
 		}
 
 		return items;
+	}
+
+	LocationItemDetail fetchItemDetail(long id) {
+
+		LocationItemDetail item = new LocationItemDetail();
+
+		try {
+			String url = Uri.parse("http://10.0.2.2:3000/api/locations/" + id).toString();
+			String jsonString = getUrlString(url);
+			Log.i(TAG, "Received JSON: " + jsonString);
+
+			ArrayList<JSONObject> locations = new ArrayList<>();
+			JSONArray jsonarray = new JSONArray(jsonString);
+			int cantLocations = jsonarray.length();
+
+			for(int i = 0; i < cantLocations; ++i) {
+				jsonarray.getJSONObject(i);
+				parseItemDetail(item, jsonarray.getJSONObject(i));
+			}
+		} catch (IOException ioe) {
+			Log.e(TAG, "Failed to fetch items", ioe);
+		} catch (JSONException je) {
+			Log.e(TAG, "Failed to parse JSON", je);
+		}
+
+		return item;
+	}
+
+	private void parseItemDetail(LocationItemDetail item, JSONObject jsonBody) {
+
 	}
 
 	private void parseItems(List<LocationItem> items, JSONObject jsonBody)

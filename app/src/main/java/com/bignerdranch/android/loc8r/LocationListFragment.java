@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -57,6 +59,8 @@ public class LocationListFragment extends Fragment {
 		public LocationHolder(LayoutInflater inflater, ViewGroup parent) {
 			super(inflater.inflate(R.layout.list_item_location, parent, false));
 
+			itemView.setOnClickListener(this);
+
 			mLocationNameTextView = itemView.findViewById(R.id.location_name);
 			mLocationAddressTextView = itemView.findViewById(R.id.location_address);
 			mLocationFacilitiesTextView = itemView.findViewById(R.id.location_facilities);
@@ -75,8 +79,8 @@ public class LocationListFragment extends Fragment {
 
 		@Override
 		public void onClick(View view) {
-			Intent intent = new Intent(getActivity(), LocationActivity.class);
-			startActivity(intent);
+			//Intent intent = new Intent(getActivity(), LocationActivity.class);
+			//startActivity(intent);
 		}
 	}
 
