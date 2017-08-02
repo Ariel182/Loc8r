@@ -1,5 +1,7 @@
 package com.bignerdranch.android.loc8r;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,11 +20,36 @@ import java.util.List;
 
 public class LocationListFragment extends Fragment {
 
+	OnItemSelectedListener mCallback;
+
 	private static final String TAG = "LocationListFragment";
 
 	private RecyclerView mLocationRecyclerView;
 	private LocationAdapter mAdapter;
 	private List<LocationItem> mItems = new ArrayList<>();
+
+	// Container Activity must implement this interface
+	public interface OnItemSelectedListener {
+		void onItemSelected(String id);
+	}
+
+	@Override
+	public void onAttach(Context context) {
+		super.onAttach(context);
+
+		Activity activity = (Activity)context;
+
+		// This makes sure that the container activity has implemented
+		// the callback interface. If not, it throws an exception
+		try {
+			mCallback = (OnItemSelectedListener) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement OnItemSelectedListener");
+		}
+	}
+
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -81,6 +108,7 @@ public class LocationListFragment extends Fragment {
 		public void onClick(View view) {
 			//Intent intent = new Intent(getActivity(), LocationActivity.class);
 			//startActivity(intent);
+			mCallback.onItemSelected(mLocationItem.getId());
 		}
 	}
 
@@ -110,7 +138,7 @@ public class LocationListFragment extends Fragment {
 			return mLocationItems.size();
 		}
 
-		public void setCrimes(List<LocationItem> locationItems) {
+		public void setLocations(List<LocationItem> locationItems) {
 			mLocationItems = locationItems;
 		}
 	}

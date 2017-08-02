@@ -8,11 +8,11 @@ public class LocationItemDetail extends LocationItem {
     private String mOpeningHours;
     private List<String> mReviews= new ArrayList<>();
 
-    public String getmOpeningHours() {
+    public String getOpeningHours() {
         return mOpeningHours;
     }
 
-    public void setmOpeningHours(String mOpeningHours) {
-        this.mOpeningHours = mOpeningHours;
+    public void setOpeningHours(String openingHours) {
+        this.mOpeningHours = openingHours;
     }
 }

@@ -83,7 +83,7 @@ public class LocationFetchr {
 		return items;
 	}
 
-	LocationItemDetail fetchItemDetail(long id) {
+	public LocationItemDetail fetchItemDetail(String id) {
 
 		LocationItemDetail item = new LocationItemDetail();
 
@@ -92,14 +92,15 @@ public class LocationFetchr {
 			String jsonString = getUrlString(url);
 			Log.i(TAG, "Received JSON: " + jsonString);
 
-			ArrayList<JSONObject> locations = new ArrayList<>();
-			JSONArray jsonarray = new JSONArray(jsonString);
-			int cantLocations = jsonarray.length();
+			//ArrayList<JSONObject> locations = new ArrayList<>();
+			//JSONArray jsonarray = new JSONArray(jsonString);
+			//int cantLocations = jsonarray.length();
 
-			for(int i = 0; i < cantLocations; ++i) {
-				jsonarray.getJSONObject(i);
-				parseItemDetail(item, jsonarray.getJSONObject(i));
-			}
+			//for(int i = 0; i < cantLocations; ++i) {
+			//	jsonarray.getJSONObject(i);
+				JSONObject jsonBody = new JSONObject(jsonString);
+				parseItemDetail(item, jsonBody);
+			//}
 		} catch (IOException ioe) {
 			Log.e(TAG, "Failed to fetch items", ioe);
 		} catch (JSONException je) {
@@ -109,20 +110,24 @@ public class LocationFetchr {
 		return item;
 	}
 
-	private void parseItemDetail(LocationItemDetail item, JSONObject jsonBody) {
-
+	private void parseItemDetail(LocationItemDetail item, JSONObject jsonBody)
+		throws IOException, JSONException {
+		parseItemImpl(item, jsonBody, false);
+		item.setOpeningHours(jsonBody.getString("openingTimes"));
 	}
 
-	private void parseItems(List<LocationItem> items, JSONObject jsonBody)
+	private void parseItemImpl(LocationItem item, JSONObject jsonBody, boolean tieneDistance)
 			throws IOException, JSONException {
 
-		LocationItem item = new LocationItem();
+		item.setId(jsonBody.getString("_id"));
 		item.setName(jsonBody.getString("name"));
 		item.setAddress(jsonBody.getString("address"));
 
-		Double distanceDouble = jsonBody.getDouble("distance");
-		String distance = new DecimalFormat("#.#").format(distanceDouble) + "Km";
-		item.setDistance(distance);
+		if(tieneDistance) {
+			Double distanceDouble = jsonBody.getDouble("distance");
+			String distance = new DecimalFormat("#.#").format(distanceDouble) + "Km";
+			item.setDistance(distance);
+		}
 
 		JSONArray facilities = jsonBody.getJSONArray("facilities");
 		item.setFacilities(getFacilitiesString(facilities));
@@ -135,6 +140,34 @@ public class LocationFetchr {
 			rating += ratingInt.toString() + " stars";
 		}
 		item.setRating(rating);
+	}
+
+	private void parseItems(List<LocationItem> items, JSONObject jsonBody)
+			throws IOException, JSONException {
+
+
+		LocationItem item = new LocationItem();
+//		item.setId(jsonBody.getString("_id"));
+//		item.setName(jsonBody.getString("name"));
+//		item.setAddress(jsonBody.getString("address"));
+//
+//		Double distanceDouble = jsonBody.getDouble("distance");
+//		String distance = new DecimalFormat("#.#").format(distanceDouble) + "Km";
+//		item.setDistance(distance);
+//
+//		JSONArray facilities = jsonBody.getJSONArray("facilities");
+//		item.setFacilities(getFacilitiesString(facilities));
+//
+//		Integer ratingInt = jsonBody.getInt("rating");
+//		String rating = "";
+//		if(ratingInt == 1) {
+//			rating = "1 star";
+//		} else {
+//			rating += ratingInt.toString() + " stars";
+//		}
+//		item.setRating(rating);
+
+		parseItemImpl(item, jsonBody, true);
 
 		items.add(item);
 	}

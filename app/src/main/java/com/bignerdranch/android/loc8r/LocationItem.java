@@ -1,13 +1,16 @@
 package com.bignerdranch.android.loc8r;
 
-import android.net.Uri;
-
 public class LocationItem {
+	private String mId;
 	private String mName;
 	private String mDistance;
 	private String mFacilities;
 	private String mAddress;
 	private String mRating;
+
+	public String getId() { return mId; }
+
+	public void setId(String id) { mId = id; }
 
 	public String getName() {
 		return mName;

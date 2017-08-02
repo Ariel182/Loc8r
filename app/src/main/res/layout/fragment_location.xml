@@ -20,11 +20,6 @@
         android:layout_height="wrap_content"
         android:text="Location facilities"/>
     <TextView
-        android:id="@+id/location_distance"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Location distance"/>
-    <TextView
         android:id="@+id/location_rating"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

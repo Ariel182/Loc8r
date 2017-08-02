@@ -1,5 +1,6 @@
 package com.bignerdranch.android.loc8r;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -7,11 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 public class LocationFragment extends Fragment {
 
 	private static final String ARG_LOCATION_ID = "location_id";
 
+	private String mId;
 	private LocationItem mLocationItem;
+	private LocationItemDetail mLocationItemDetail;
 	private TextView mLocationName;
 	private TextView mLocationAddress;
 	private TextView mLocationFacilities;
@@ -19,9 +24,9 @@ public class LocationFragment extends Fragment {
 	private TextView mLocationRating;
 	private TextView mLocationOpeningHours;
 
-	public static LocationFragment newInstance(long crimeId) {
+	public static LocationFragment newInstance(String locationId) {
 		Bundle args = new Bundle();
-		args.putSerializable(ARG_LOCATION_ID, crimeId);
+		args.putSerializable(ARG_LOCATION_ID, locationId);
 
 		LocationFragment fragment = new LocationFragment();
 		fragment.setArguments(args);
@@ -31,8 +36,8 @@ public class LocationFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		long id = getArguments().getLong(ARG_LOCATION_ID);
-		mLocationItem = new LocationItem();
+		mId = getArguments().getString(ARG_LOCATION_ID);
+		mLocationItem = new LocationItemDetail();
 	}
 
 	@Override
@@ -42,13 +47,45 @@ public class LocationFragment extends Fragment {
 
 		//Capitulo 7 - Creating a UI Fragment
 		//bind controles y eso
-		mLocationName = view.findViewById(R.id.location_name);
-		mLocationAddress = view.findViewById(R.id.location_name);
-		mLocationFacilities = view.findViewById(R.id.location_name);
-		mLocationDistance = view.findViewById(R.id.location_name);
-		mLocationRating = view.findViewById(R.id.location_name);
-		mLocationOpeningHours = view.findViewById(R.id.location_name);
+		//mLocationName = view.findViewById(R.id.location_name);
+		//mLocationAddress = view.findViewById(R.id.location_address);
+		//mLocationFacilities = view.findViewById(R.id.location_facilities);
+		//mLocationDistance = view.findViewById(R.id.location_distance);
+		//mLocationRating = view.findViewById(R.id.location_rating);
+		//mLocationOpeningHours = view.findViewById(R.id.location_opening_hours);
+
+
+		new FetchItemDetailTask().execute();
 
 		return view;
+	}
+
+	private class FetchItemDetailTask extends AsyncTask<Void,Void,LocationItemDetail> {
+		@Override
+		protected LocationItemDetail doInBackground(Void... params) {
+			return new LocationFetchr().fetchItemDetail(mId);
+		}
+
+		@Override
+		protected void onPostExecute(LocationItemDetail locationItemDetail) {
+			mLocationItemDetail = locationItemDetail;
+			asignarView();
+		}
+	}
+
+	void asignarView(){
+		mLocationName = getView().findViewById(R.id.location_name);
+		mLocationAddress = getView().findViewById(R.id.location_address);
+		mLocationFacilities = getView().findViewById(R.id.location_facilities);
+		//mLocationDistance = getView().findViewById(R.id.location_distance);
+		mLocationRating = getView().findViewById(R.id.location_rating);
+		mLocationOpeningHours = getView().findViewById(R.id.location_opening_hours);
+
+		mLocationName.setText(mLocationItemDetail.getName());
+		mLocationAddress.setText(mLocationItemDetail.getAddress());
+		mLocationFacilities.setText(mLocationItemDetail.getFacilities());
+		//mLocationDistance.setText(mLocationItemDetail.getDistance());
+		mLocationRating.setText(mLocationItemDetail.getRating());
+		mLocationOpeningHours.setText(mLocationItemDetail.getOpeningHours());
 	}
 }
