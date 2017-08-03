@@ -29,4 +29,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Location opening hours"/>
+    <ImageView
+        android:id="@+id/locationMap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Location map"/>
 </LinearLayout>

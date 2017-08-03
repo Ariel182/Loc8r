@@ -1,5 +1,7 @@
 package com.bignerdranch.android.loc8r;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 
@@ -12,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.RoundingMode;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -23,9 +27,17 @@ public class LocationFetchr {
 
 	private static final String TAG = "LocationFetchr";
 
-	public byte[] getUrlBytes(String urlSpec) throws IOException {
+	public byte[] getUrlBytes(String urlSpec, boolean conProxy) throws IOException {
 		URL url = new URL(urlSpec);
-		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+		HttpURLConnection connection;
+		// PARA PROXY
+		if(conProxy) {
+			InetSocketAddress proxyInet = new InetSocketAddress("10.101.151.22",8080);
+			Proxy proxy = new Proxy(Proxy.Type.HTTP, proxyInet);
+			connection = (HttpURLConnection)url.openConnection(proxy);
+		}
+		else
+			connection = (HttpURLConnection)url.openConnection();
 
 		try {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -50,7 +62,7 @@ public class LocationFetchr {
 	}
 
 	public String getUrlString(String urlSpec) throws IOException {
-		return new String(getUrlBytes(urlSpec));
+		return new String(getUrlBytes(urlSpec, false));
 	}
 
 	public List<LocationItem> fetchItems() {
@@ -92,28 +104,52 @@ public class LocationFetchr {
 			String jsonString = getUrlString(url);
 			Log.i(TAG, "Received JSON: " + jsonString);
 
-			//ArrayList<JSONObject> locations = new ArrayList<>();
-			//JSONArray jsonarray = new JSONArray(jsonString);
-			//int cantLocations = jsonarray.length();
+			JSONObject jsonBody = new JSONObject(jsonString);
 
-			//for(int i = 0; i < cantLocations; ++i) {
-			//	jsonarray.getJSONObject(i);
-				JSONObject jsonBody = new JSONObject(jsonString);
-				parseItemDetail(item, jsonBody);
-			//}
+			String urlMap = Uri.parse("http://maps.googleapis.com/maps/api/staticmap?center=51.455041,-0.9690884&zoom=17&size=400x350&sensor=false&markers=51.455041,-0.9690884&scale=2").toString();
+
+            byte[] bitmapBytes = getUrlBytes(urlMap, true);
+            final Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
+			parseItemDetail(item, jsonBody, bitmap);
+
 		} catch (IOException ioe) {
-			Log.e(TAG, "Failed to fetch items", ioe);
+			Log.e(TAG, "Failed to fetch item detail", ioe);
 		} catch (JSONException je) {
-			Log.e(TAG, "Failed to parse JSON", je);
+			Log.e(TAG, "Failed to parse JSON in fetchItemDetail", je);
 		}
 
 		return item;
 	}
 
-	private void parseItemDetail(LocationItemDetail item, JSONObject jsonBody)
+	private String parseOpeningHours(JSONArray jsonArrayData) {
+		int cantElementos = jsonArrayData.length();
+		String str = new String();
+		try {
+			for (int i = 0; i < cantElementos; ++i) {
+				JSONObject elem = jsonArrayData.getJSONObject(i);
+				if(i != 0)
+					str += "\n";
+
+				str += elem.getString("days") + ": ";
+
+				if(!elem.getBoolean("closed"))
+					str += elem.getString("opening") + " - " + elem.getString("closing");
+
+				else
+					str += "closed";
+			}
+		}
+		catch (JSONException je) {
+			Log.e(TAG, "Failed to parse JSON in parseOpeningHours", je);
+		}
+        return str;
+    }
+
+	private void parseItemDetail(LocationItemDetail item, JSONObject jsonBody, Bitmap bitmap)
 		throws IOException, JSONException {
 		parseItemImpl(item, jsonBody, false);
-		item.setOpeningHours(jsonBody.getString("openingTimes"));
+		item.setOpeningHours(parseOpeningHours(new JSONArray(jsonBody.getString("openingTimes"))));
+		item.setLocationMap(bitmap);
 	}
 
 	private void parseItemImpl(LocationItem item, JSONObject jsonBody, boolean tieneDistance)

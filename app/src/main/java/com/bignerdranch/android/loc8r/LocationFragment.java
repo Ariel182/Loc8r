@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class LocationFragment extends Fragment {
 	private TextView mLocationDistance;
 	private TextView mLocationRating;
 	private TextView mLocationOpeningHours;
+	private ImageView mLocationMap;
 
 	public static LocationFragment newInstance(String locationId) {
 		Bundle args = new Bundle();
@@ -87,5 +89,7 @@ public class LocationFragment extends Fragment {
 		//mLocationDistance.setText(mLocationItemDetail.getDistance());
 		mLocationRating.setText(mLocationItemDetail.getRating());
 		mLocationOpeningHours.setText(mLocationItemDetail.getOpeningHours());
+		//mLocationMap.setImageBitmap(mLocationItemDetail.getLocationMap());
+		Picasso.with(getContext()).load("http://cdn.journaldev.com/wp-content/uploads/2016/11/android-image-picker-project-structure.png").into(mLocationMap);
 	}
 }
