@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,12 +32,12 @@ public class LocationFetchr {
 		URL url = new URL(urlSpec);
 		HttpURLConnection connection;
 		// PARA PROXY
-		if(conProxy) {
-			InetSocketAddress proxyInet = new InetSocketAddress("10.101.151.22",8080);
-			Proxy proxy = new Proxy(Proxy.Type.HTTP, proxyInet);
-			connection = (HttpURLConnection)url.openConnection(proxy);
-		}
-		else
+//		if(conProxy) {
+//			InetSocketAddress proxyInet = new InetSocketAddress("10.101.151.22",8080);
+//			Proxy proxy = new Proxy(Proxy.Type.HTTP, proxyInet);
+//			connection = (HttpURLConnection)url.openConnection(proxy);
+//		}
+//		else
 			connection = (HttpURLConnection)url.openConnection();
 
 		try {
@@ -109,7 +110,14 @@ public class LocationFetchr {
 			String urlMap = Uri.parse("http://maps.googleapis.com/maps/api/staticmap?center=51.455041,-0.9690884&zoom=17&size=400x350&sensor=false&markers=51.455041,-0.9690884&scale=2").toString();
 
             byte[] bitmapBytes = getUrlBytes(urlMap, true);
-            final Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
+            final Bitmap original = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
+
+
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			original.compress(Bitmap.CompressFormat.JPEG, 50, out);
+			Bitmap bitmap = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
+
+
 			parseItemDetail(item, jsonBody, bitmap);
 
 		} catch (IOException ioe) {
@@ -181,28 +189,7 @@ public class LocationFetchr {
 	private void parseItems(List<LocationItem> items, JSONObject jsonBody)
 			throws IOException, JSONException {
 
-
 		LocationItem item = new LocationItem();
-//		item.setId(jsonBody.getString("_id"));
-//		item.setName(jsonBody.getString("name"));
-//		item.setAddress(jsonBody.getString("address"));
-//
-//		Double distanceDouble = jsonBody.getDouble("distance");
-//		String distance = new DecimalFormat("#.#").format(distanceDouble) + "Km";
-//		item.setDistance(distance);
-//
-//		JSONArray facilities = jsonBody.getJSONArray("facilities");
-//		item.setFacilities(getFacilitiesString(facilities));
-//
-//		Integer ratingInt = jsonBody.getInt("rating");
-//		String rating = "";
-//		if(ratingInt == 1) {
-//			rating = "1 star";
-//		} else {
-//			rating += ratingInt.toString() + " stars";
-//		}
-//		item.setRating(rating);
-
 		parseItemImpl(item, jsonBody, true);
 
 		items.add(item);

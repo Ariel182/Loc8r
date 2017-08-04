@@ -9,7 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.List;
+import com.squareup.picasso.Picasso;
+
 
 public class LocationFragment extends Fragment {
 
@@ -79,17 +80,15 @@ public class LocationFragment extends Fragment {
 		mLocationName = getView().findViewById(R.id.location_name);
 		mLocationAddress = getView().findViewById(R.id.location_address);
 		mLocationFacilities = getView().findViewById(R.id.location_facilities);
-		//mLocationDistance = getView().findViewById(R.id.location_distance);
 		mLocationRating = getView().findViewById(R.id.location_rating);
 		mLocationOpeningHours = getView().findViewById(R.id.location_opening_hours);
+		mLocationMap = getView().findViewById(R.id.location_map);
 
 		mLocationName.setText(mLocationItemDetail.getName());
 		mLocationAddress.setText(mLocationItemDetail.getAddress());
 		mLocationFacilities.setText(mLocationItemDetail.getFacilities());
-		//mLocationDistance.setText(mLocationItemDetail.getDistance());
 		mLocationRating.setText(mLocationItemDetail.getRating());
 		mLocationOpeningHours.setText(mLocationItemDetail.getOpeningHours());
-		//mLocationMap.setImageBitmap(mLocationItemDetail.getLocationMap());
-		Picasso.with(getContext()).load("http://cdn.journaldev.com/wp-content/uploads/2016/11/android-image-picker-project-structure.png").into(mLocationMap);
+		mLocationMap.setImageBitmap(mLocationItemDetail.getLocationMap());
 	}
 }
