@@ -3,13 +3,19 @@ package com.bignerdranch.android.loc8r;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 
 public class LocationFragment extends Fragment {
@@ -26,6 +32,8 @@ public class LocationFragment extends Fragment {
 	private TextView mLocationRating;
 	private TextView mLocationOpeningHours;
 	private ImageView mLocationMap;
+	private TextView mDetailCustomerReviews;
+	private Button mAddReviewButton;
 
 	public static LocationFragment newInstance(String locationId) {
 		Bundle args = new Bundle();
@@ -48,15 +56,10 @@ public class LocationFragment extends Fragment {
 							 Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_location, container, false);
 
-		//Capitulo 7 - Creating a UI Fragment
-		//bind controles y eso
-		//mLocationName = view.findViewById(R.id.location_name);
-		//mLocationAddress = view.findViewById(R.id.location_address);
-		//mLocationFacilities = view.findViewById(R.id.location_facilities);
-		//mLocationDistance = view.findViewById(R.id.location_distance);
-		//mLocationRating = view.findViewById(R.id.location_rating);
-		//mLocationOpeningHours = view.findViewById(R.id.location_opening_hours);
-
+		mDetailCustomerReviews = view.findViewById(R.id.detail_customer_reviews);
+		mAddReviewButton = view.findViewById(R.id.add_review_button);
+		mDetailCustomerReviews.setVisibility(View.INVISIBLE);
+		mAddReviewButton.setVisibility(View.INVISIBLE);
 
 		new FetchItemDetailTask().execute();
 
@@ -76,7 +79,7 @@ public class LocationFragment extends Fragment {
 		}
 	}
 
-	void asignarView(){
+	private void asignarView(){
 		mLocationName = getView().findViewById(R.id.location_name);
 		mLocationAddress = getView().findViewById(R.id.location_address);
 		mLocationFacilities = getView().findViewById(R.id.location_facilities);
@@ -90,5 +93,51 @@ public class LocationFragment extends Fragment {
 		mLocationRating.setText(mLocationItemDetail.getRating());
 		mLocationOpeningHours.setText(mLocationItemDetail.getOpeningHours());
 		mLocationMap.setImageBitmap(mLocationItemDetail.getLocationMap());
+		getView().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+		mAddReviewButton.setVisibility(View.VISIBLE);
+
+		int cantReviews = mLocationItemDetail.getReviews().size();
+
+		if(cantReviews > 0) {
+
+			mDetailCustomerReviews.setVisibility(View.VISIBLE);
+			displayReviews(mLocationItemDetail.getReviews(), cantReviews);
+		}
+
+		mAddReviewButton.setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v){
+				AddReviewFragment newFragment = AddReviewFragment.newInstance(mId, mLocationItemDetail.getName());
+
+				FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+
+				// Replace whatever is in the fragment_container view with this fragment,
+				// and add the transaction to the back stack so the user can navigate back
+				transaction.replace(R.id.fragment_container, newFragment);
+				transaction.addToBackStack(null);
+
+				// Commit the transaction
+				transaction.commit();
+			}
+		});
+	}
+
+	private void displayReviews(List<Review> reviews, int cantReviews) {
+
+		LinearLayout myLayout = getView().findViewById(R.id.location_layout);
+
+		for(int i = 0; i != cantReviews; ++i) {
+			TextView cabeceraTextView = new TextView(getContext());
+			TextView cuerpoTextView = new TextView(getContext());
+			Review review = reviews.get(i);
+			String cabecera = review.getRating() + " " + review.getAuthor() + " " + review.getCreatedOn();
+			String cuerpo = review.getReviewText();
+
+			cabeceraTextView.setText(cabecera);
+			cuerpoTextView.setText(cuerpo);
+
+			myLayout.addView(cabeceraTextView);
+			myLayout.addView(cuerpoTextView);
+		}
 	}
 }

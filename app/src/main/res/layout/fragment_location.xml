@@ -1,41 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/location_layout"
               android:orientation="vertical"
               android:padding="8dp"
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
+    <RelativeLayout
+        android:id="@+id/loadingPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center" >
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+    </RelativeLayout>
     <TextView
         android:id="@+id/location_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Location name"/>
+        android:text=""/>
     <TextView
         android:id="@+id/location_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Location address"/>
+        android:text=""/>
     <TextView
         android:id="@+id/location_facilities"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Location facilities"/>
+        android:text=""/>
     <TextView
         android:id="@+id/location_rating"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Location rating"/>
+        android:text=""/>
     <TextView
         android:id="@+id/location_opening_hours"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Location opening hours"/>
+        android:text=""/>
 
     <ImageView
         android:id="@+id/location_map"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Location map"/>
+        android:text=""/>
+    <Button
+        android:id="@+id/add_review_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_review_button"/>
     <TextView
         android:id="@+id/detail_customer_reviews"
         android:layout_width="match_parent"

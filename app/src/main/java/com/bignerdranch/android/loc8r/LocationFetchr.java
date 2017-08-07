@@ -112,11 +112,9 @@ public class LocationFetchr {
             byte[] bitmapBytes = getUrlBytes(urlMap, true);
             final Bitmap original = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
 
-
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			original.compress(Bitmap.CompressFormat.JPEG, 50, out);
 			Bitmap bitmap = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
-
 
 			parseItemDetail(item, jsonBody, bitmap);
 
@@ -150,13 +148,35 @@ public class LocationFetchr {
 		catch (JSONException je) {
 			Log.e(TAG, "Failed to parse JSON in parseOpeningHours", je);
 		}
-        return str;
-    }
+		return str;
+	}
+
+	private void setReviews(JSONArray jsonArrayData, List<Review> reviews)
+			throws IOException, JSONException {
+
+		int cantElementos = jsonArrayData.length();
+		for(int i = 0; i != cantElementos; ++i) {
+			reviews.add(parseReview((jsonArrayData.getJSONObject(i))));
+		}
+	}
+
+	private Review parseReview(JSONObject elem)
+	throws JSONException {
+
+		Review review = new Review();
+		review.setRating(elem.getString("rating"));
+		review.setAuthor(elem.getString("author"));
+		review.setCreatedOn(elem.getString("createdOn"));
+		review.setReviewText(elem.getString("reviewText"));
+
+		return review;
+	}
 
 	private void parseItemDetail(LocationItemDetail item, JSONObject jsonBody, Bitmap bitmap)
 		throws IOException, JSONException {
 		parseItemImpl(item, jsonBody, false);
 		item.setOpeningHours(parseOpeningHours(new JSONArray(jsonBody.getString("openingTimes"))));
+		setReviews(new JSONArray(jsonBody.getString("reviews")), item.getReviews());
 		item.setLocationMap(bitmap);
 	}
 

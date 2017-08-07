@@ -8,7 +8,7 @@ import java.util.List;
 public class LocationItemDetail extends LocationItem {
 
     private String mOpeningHours;
-    private List<String> mReviews= new ArrayList<>();
+    private List<Review> mReviews = new ArrayList<>();
     private Bitmap mLocationMap;
 
     public Bitmap getLocationMap() {
@@ -27,5 +27,12 @@ public class LocationItemDetail extends LocationItem {
         this.mOpeningHours = openingHours;
     }
 
+    public List<Review> getReviews() {
+        return mReviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        mReviews = reviews;
+    }
 
 }
