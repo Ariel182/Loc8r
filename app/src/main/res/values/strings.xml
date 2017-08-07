@@ -14,4 +14,5 @@
     </string-array>
 
     <string name="fragment_add_review_review">Review</string>
+    <string name="fragment_do_add_review_button">Add my review</string>
 </resources>

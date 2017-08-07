@@ -6,10 +6,19 @@ package com.bignerdranch.android.loc8r;
 
 public class Review {
 
+	private String mId;
 	private String mRating;
 	private String mAuthor;
 	private String mReviewText;
 	private String mCreatedOn;
+
+	public String getId() {
+		return mId;
+	}
+
+	public void setId(String id) {
+		mId = id;
+	}
 
 	public String getRating() {
 		return mRating;

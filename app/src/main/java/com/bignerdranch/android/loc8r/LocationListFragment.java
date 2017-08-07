@@ -2,12 +2,9 @@ package com.bignerdranch.android.loc8r;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -150,7 +147,7 @@ public class LocationListFragment extends Fragment {
 	private class FetchItemsTask extends AsyncTask<Void,Void,List<LocationItem>> {
 		@Override
 		protected List<LocationItem> doInBackground(Void... params) {
-			return new LocationFetchr().fetchItems();
+			return new ApiInterface().fetchItems();
 		}
 
 		@Override

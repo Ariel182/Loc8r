@@ -1,11 +1,17 @@
 package com.bignerdranch.android.loc8r;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.List;
 
 /**
  * Created by Ariel on 06/08/2017.
@@ -15,9 +21,11 @@ public class AddReviewFragment extends Fragment {
 
 	private static final String ARG_LOCATION_ID = "location_id";
 	private static final String ARG_LOCATION_NAME = "location_name";
-	private String mId;
+	private String mLocationId;
 	private String mLocationName;
 	private TextView mReviewHeader;
+	private Button mDoAddReviewButton;
+	private boolean mPostResult;
 
 	public static AddReviewFragment newInstance(String locationId, String locationName) {
 		Bundle args = new Bundle();
@@ -32,18 +40,54 @@ public class AddReviewFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mId = getArguments().getString(ARG_LOCATION_ID);
+		setRetainInstance(true);
+		mLocationId = getArguments().getString(ARG_LOCATION_ID);
 		mLocationName = getArguments().getString(ARG_LOCATION_NAME);
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_add_review, container, false);
+		final View view = inflater.inflate(R.layout.fragment_add_review, container, false);
 
 		mReviewHeader = view.findViewById(R.id.review_header);
 		mReviewHeader.setText("Review " + mLocationName);
 
+		mDoAddReviewButton = view.findViewById(R.id.do_add_review_button);
+
+		mDoAddReviewButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				TextView authorTextView = view.findViewById(R.id.edit_text_name);
+				Spinner ratingSpinner = view.findViewById(R.id.spinner_rating);
+				TextView reviewTextView = view.findViewById(R.id.edit_text_review);
+
+				String author = authorTextView.getText().toString();
+				String rating = ratingSpinner.getSelectedItem().toString();
+				String review = authorTextView.getText().toString();
+
+                if(author.isEmpty() || rating.isEmpty() || review.isEmpty()) {
+                    Toast.makeText(getContext(), "All fields are required", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    new PostItemTask().execute(mLocationId, author, rating, review);
+                }
+			}
+		});
+
 		return view;
+	}
+
+	private class PostItemTask extends AsyncTask<String,Void,Integer> {
+		@Override
+		protected Integer doInBackground(String... params) {
+			return new ApiInterface().postItem(params);
+		}
+
+		@Override
+		protected void onPostExecute(Integer result) {
+			mPostResult = result != 0;
+		}
 	}
 }
