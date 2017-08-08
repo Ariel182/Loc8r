@@ -82,12 +82,32 @@ public class AddReviewFragment extends Fragment {
 	private class PostItemTask extends AsyncTask<String,Void,Integer> {
 		@Override
 		protected Integer doInBackground(String... params) {
-			return new ApiInterface().postItem(params);
+			return new ApiInterface().postItem(params, true);
 		}
 
 		@Override
 		protected void onPostExecute(Integer result) {
-			mPostResult = result != 0;
+
+			if(result != 0) {
+				//Toast.makeText(getContext(), "Review sent", Toast.LENGTH_SHORT).show();
+				getFragmentManager().popBackStackImmediate();
+
+
+//				AddReviewFragment newFragment = AddReviewFragment.newInstance(mId, mLocationItemDetail.getName());
+//
+//				FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+//
+//				// Replace whatever is in the fragment_container view with this fragment,
+//				// and add the transaction to the back stack so the user can navigate back
+//				transaction.replace(R.id.fragment_container, newFragment);
+//				transaction.addToBackStack(null);
+//
+//				// Commit the transaction
+//				transaction.commit();
+			}
+			else {
+				Toast.makeText(getContext(), "Couldn't send review. Please try again later.", Toast.LENGTH_LONG).show();
+			}
 		}
 	}
 }
