@@ -65,7 +65,7 @@ public class AddReviewFragment extends Fragment {
 
 				String author = authorTextView.getText().toString();
 				String rating = ratingSpinner.getSelectedItem().toString();
-				String review = authorTextView.getText().toString();
+				String review = reviewTextView.getText().toString();
 
                 if(author.isEmpty() || rating.isEmpty() || review.isEmpty()) {
                     Toast.makeText(getContext(), "All fields are required", Toast.LENGTH_LONG).show();

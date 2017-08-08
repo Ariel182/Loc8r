@@ -25,7 +25,6 @@ public class LocationFragment extends Fragment {
 	private TextView mLocationName;
 	private TextView mLocationAddress;
 	private TextView mLocationFacilities;
-	private TextView mLocationDistance;
 	private TextView mLocationRating;
 	private TextView mLocationOpeningHours;
 	private ImageView mLocationMap;
@@ -121,7 +120,7 @@ public class LocationFragment extends Fragment {
 
 	private void displayReviews(List<Review> reviews, int cantReviews) {
 
-		LinearLayout myLayout = getView().findViewById(R.id.location_layout);
+		LinearLayout myLayout = getView().findViewById(R.id.comments_layout);
 
 		for(int i = 0; i != cantReviews; ++i) {
 			TextView cabeceraTextView = new TextView(getContext());

@@ -159,7 +159,8 @@ public class ApiInterface {
             throws IOException, JSONException {
 
         int cantElementos = jsonArrayData.length();
-        for(int i = 0; i != cantElementos; ++i) {
+        //for(int i = 0; i != cantElementos; ++i) {
+        for(int i = (cantElementos - 1); 0 <= i; --i) {
             reviews.add(parseReview((jsonArrayData.getJSONObject(i))));
         }
     }
