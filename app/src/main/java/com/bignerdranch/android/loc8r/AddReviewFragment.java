@@ -3,6 +3,7 @@ package com.bignerdranch.android.loc8r;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,6 @@ public class AddReviewFragment extends Fragment {
 	private String mLocationName;
 	private TextView mReviewHeader;
 	private Button mDoAddReviewButton;
-	private boolean mPostResult;
 
 	public static AddReviewFragment newInstance(String locationId, String locationName) {
 		Bundle args = new Bundle();
